@@ -24,6 +24,8 @@
   <body>
     <div id="map1"></div>
     <script>
+    var marker;
+	var marker2;
       function initMap() {
         var myLatlng = {lat: -25.363, lng: 131.044};
 
@@ -35,11 +37,16 @@
       	   alert( 'Lat: ' + event.latLng.lat() + ' and Longitude is: ' + event.latLng.lng() );
      });
 
-        var marker = new google.maps.Marker({
+        marker = new google.maps.Marker({
           position: myLatlng,
           map: map,
           title: 'Click to zoom'
         });
+        marker2 = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: 'Click to zoom'
+          });
         
         map.addListener('click', function(e) {
             placeMarkerAndPanTo(e.latLng, map);
@@ -52,7 +59,9 @@
         });
       }
       function placeMarkerAndPanTo(latLng, map) {
-    	  var marker = new google.maps.Marker({
+    	  marker.setMap(null);
+    	  marker2.setMap(null);
+    	   marker2 = new google.maps.Marker({
     	    position: latLng,
     	    map: map
     	  });
