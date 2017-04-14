@@ -6,15 +6,16 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="jquery-2.1.3.js"></script>
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
-        height: 90%;
+        height: 80%;
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
-        height: 90%;
+        height: 100%;
         margin: 0;
         padding: 0;
       }
@@ -30,6 +31,9 @@
           zoom: 4,
           center: myLatlng
         });
+        map.addListener(map, 'click', function(event) {
+      	   alert( 'Lat: ' + event.latLng.lat() + ' and Longitude is: ' + event.latLng.lng() );
+     });
 
         var marker = new google.maps.Marker({
           position: myLatlng,
@@ -39,6 +43,7 @@
         
         map.addListener('click', function(e) {
             placeMarkerAndPanTo(e.latLng, map);
+            alert( 'Lat: ' + e.latLng.lat() + ' and Longitude is: ' + e.latLng.lng() );
           });
 
         marker.addListener('click', function() {
@@ -53,15 +58,22 @@
     	  });
     	  map.panTo(latLng);
     	}
+      
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6m_Z5GYZIXmHgnwbhR6Qdw6n7Qg4kAU8
     &callback=initMap">
     </script>
+    <script>
+    $(document).ready(function() {
+    	
+    	
+    	});
+    </script>
 <header>
 <h1 class="h11">Erasmus</h1> <h1 class="h12">Application</h1>
 </header>
-<div id="map" style="width: 90%; height: 80%; border:solid" ></div>
+<div id="map" style="width: 80%; height: 80%; border:solid" ></div>
 
   </body>
 </html>
