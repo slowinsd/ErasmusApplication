@@ -19,19 +19,40 @@
         margin: 0;
         padding: 0;
       }
+      #panelderecherche {
+      	position: absolute;
+        top: 12%;
+        left: 81%;
+        background-color: #fff;
+        padding: 10px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
     </style>
   </head>
   <body>
-    <div id="map1"></div>
+  <div id="panelderecherche">
+  	<input id="adresse" type="text">
+  	<input id="valider" type="button" value="Rechercher">
+  </div>
     <script>
     var marker;
 	var marker2;
+	var marker3;
       function initMap() {
         var myLatlng = {lat: -25.363, lng: 131.044};
 
         var map = new google.maps.Map(document.getElementById("map"), {
           zoom: 4,
           center: myLatlng
+        });
+        var geocoder = new google.maps.Geocoder();
+
+        document.getElementById('valider').addEventListener('click', function() {
+          geocodeAddress(geocoder, map);
         });
         map.addListener(map, 'click', function(event) {
       	   alert( 'Lat: ' + event.latLng.lat() + ' and Longitude is: ' + event.latLng.lng() );
@@ -58,9 +79,24 @@
           map.setCenter(marker.getPosition());
         });
       }
+      function geocodeAddress(geocoder, resultsMap) {
+          var address = document.getElementById('adresse').value;
+          geocoder.geocode({'address': address}, function(results, status) {
+            if (status === 'OK') {
+              resultsMap.setCenter(results[0].geometry.location);
+               marker3 = new google.maps.Marker({
+                map: resultsMap,
+                position: results[0].geometry.location
+              });
+            } else {
+              alert('Le lieu rentré n\'existe pas ' + status);
+            }
+          });
+        }
       function placeMarkerAndPanTo(latLng, map) {
     	  marker.setMap(null);
     	  marker2.setMap(null);
+    	  marker3.setMap(null);
     	   marker2 = new google.maps.Marker({
     	    position: latLng,
     	    map: map
