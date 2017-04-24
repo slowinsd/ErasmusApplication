@@ -40,8 +40,7 @@
   </div>
     <script>
     var marker;
-	var marker2;
-	var marker3;
+    
       function initMap() {
         var myLatlng = {lat: -25.363, lng: 131.044};
 
@@ -54,24 +53,18 @@
         document.getElementById('valider').addEventListener('click', function() {
           geocodeAddress(geocoder, map);
         });
-        map.addListener(map, 'click', function(event) {
-      	   alert( 'Lat: ' + event.latLng.lat() + ' and Longitude is: ' + event.latLng.lng() );
-     });
+        
 
         marker = new google.maps.Marker({
           position: myLatlng,
           map: map,
           title: 'Click to zoom'
         });
-        marker2 = new google.maps.Marker({
-            position: myLatlng,
-            map: map,
-            title: 'Click to zoom'
-          });
+       
         
         map.addListener('click', function(e) {
             placeMarkerAndPanTo(e.latLng, map);
-            alert( 'Lat: ' + e.latLng.lat() + ' and Longitude is: ' + e.latLng.lng() );
+            console.log( 'Lat: ' + e.latLng.lat() + ' and Longitude is: ' + e.latLng.lng() );
           });
 
         marker.addListener('click', function() {
@@ -84,7 +77,7 @@
           geocoder.geocode({'address': address}, function(results, status) {
             if (status === 'OK') {
               resultsMap.setCenter(results[0].geometry.location);
-               marker3 = new google.maps.Marker({
+               marker = new google.maps.Marker({
                 map: resultsMap,
                 position: results[0].geometry.location
               });
@@ -95,12 +88,12 @@
         }
       function placeMarkerAndPanTo(latLng, map) {
     	  marker.setMap(null);
-    	  marker2.setMap(null);
-    	  marker3.setMap(null);
-    	   marker2 = new google.maps.Marker({
+    	
+    	   marker = new google.maps.Marker({
     	    position: latLng,
     	    map: map
     	  });
+    	  marker.setAnimation(google.maps.Animation.DROP);
     	  map.panTo(latLng);
     	}
       
