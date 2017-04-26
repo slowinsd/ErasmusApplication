@@ -31,6 +31,19 @@
         line-height: 30px;
         padding-left: 10px;
       }
+      #informations{
+      	position: absolute;
+        top: 20%;
+        left: 81%;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        font-size: small;
+        line-height: 30px;
+        padding-left: 10px;
+      }
     </style>
   </head>
   <body>
@@ -38,9 +51,15 @@
   	<input id="adresse" type="text">
   	<input id="valider" type="button" value="Rechercher">
   </div>
+  <div id="informations" style="border: solid;">
+  	<p id="texte">
+  		<li>Lister tous vos livres <input type="button" value="Lister" id="list" ></li>
+  	</p>
+  </div>
     <script>
     var marker;
-    
+    var latitude;
+    var longitude;
       function initMap() {
         var myLatlng = {lat: -25.363, lng: 131.044};
 
@@ -64,7 +83,9 @@
         
         map.addListener('click', function(e) {
             placeMarkerAndPanTo(e.latLng, map);
-            console.log( 'Lat: ' + e.latLng.lat() + ' and Longitude is: ' + e.latLng.lng() );
+            latitude = e.latLng.lat();
+            longitude = e.latLng.lng();
+            console.log( 'Lat: ' + latitude + ' and Longitude is: ' + longitude );
           });
 
         marker.addListener('click', function() {
@@ -77,6 +98,7 @@
           geocoder.geocode({'address': address}, function(results, status) {
             if (status === 'OK') {
               resultsMap.setCenter(results[0].geometry.location);
+              marker.setMap(null);
                marker = new google.maps.Marker({
                 map: resultsMap,
                 position: results[0].geometry.location
@@ -102,12 +124,56 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6m_Z5GYZIXmHgnwbhR6Qdw6n7Qg4kAU8
     &callback=initMap">
     </script>
-    <script>
-    $(document).ready(function() {
-    	
-    	
-    	});
+       <script>
+// IMPORTANT ! Otherwise the DOM is not yet created !
+$(document).ready(function() {
+	$('#map').click(function(e) {
+		$.ajax({
+    // The URL for the request
+    url:"http://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&sensor=false",
+    dataType:"json",
+    success: function(json) {
+        $("#output").text(JSON.stringify(json));
+        $("<h1>").text(json.title).appendTo("body");
+        $("<div class=\"content\">").html(json.html).appendTo("body");
+    }});
+		return false;
+	});
+	
+}); // end document.ready
     </script>
+    <div id='output'>
+    </div>
+      <script>$('#list').click(function(event) {
+  $.ajax({
+    // The URL for the request
+    url:"http://maps.googleapis.com/maps/api/geocode/json?latlng="+event.latLng.lat()+","+event.latLng.lng()+"&sensor=false",
+    // Whether this is a POST/GET/UPDATE/DELETE request
+    type:"GET",
+    // The type of data we expect back
+    dataType:"json",
+    // Code to run if the request succeeds;
+    // the response is passed to the function
+    success: function(json) {
+        $("#output").text(JSON.stringify(json));
+        $("<h1>").text(json.title).appendTo("body");
+        $("<div class=\"content\">").html(json.html).appendTo("body");
+    },
+    // Code to run if the request fails; the raw request and
+    // status codes are passed to the function
+    error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+    },
+    // Code to run regardless of success or failure
+    complete: function( xhr, status ) {
+        alert( "The request is complete!" );
+    }
+  });
+});
+</script>
 <header>
 <h1 class="h11">Erasmus</h1> <h1 class="h12">Application</h1>
 </header>
