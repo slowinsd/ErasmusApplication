@@ -52,16 +52,16 @@
   	<input id="valider" type="button" value="Rechercher">
   </div>
   <div id="informations" style="border: solid;">
-  	<p id="texte">
-  		<li>Lister tous vos livres <input type="button" value="Lister" id="list" ></li>
-  	</p>
+  	<ul id="texte"></ul>
+  	<ul id="texte2"></ul>
   </div>
     <script>
     var marker;
     var latitude;
     var longitude;
+    var jsonResult;
       function initMap() {
-        var myLatlng = {lat: -25.363, lng: 131.044};
+        var myLatlng = {lat: 50.60, lng: 3.06};
 
         var map = new google.maps.Map(document.getElementById("map"), {
           zoom: 4,
@@ -128,19 +128,44 @@
 // IMPORTANT ! Otherwise the DOM is not yet created !
 $(document).ready(function() {
 	$('#map').click(function(e) {
-		$.ajax({
-    // The URL for the request
-    url:"http://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&sensor=false",
-    dataType:"json",
-    success: function(json) {
-        $("#output").text(JSON.stringify(json));
-        $("<h1>").text(json.title).appendTo("body");
-        $("<div class=\"content\">").html(json.html).appendTo("body");
-    }});
-		return false;
+		$.getJSON("http://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&sensor=false", function( data ) {
+			  for(var i=0;i<data.results.length;i++){
+				  var item = data.results;
+				  for(var j=0;j<item.length;j++){
+					  if(item[i].address_components[j].types[0] === "locality"){
+						  console.log(item[i].address_components[j].long_name);
+					  }
+					  break;
+				  }
+			  }
+			});
+		/*$.ajax({ 
+		    type: 'GET', 
+		    url: "http://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&sensor=false", 
+		    data: { get_param: 'value' }, 
+		    dataType: 'json',
+		    success: function (data) { 
+		       var names = data
+		       $('#texte').html(data);
+		    },
+		    // Code to run if the request fails; the raw request and
+		    // status codes are passed to the function
+		    error: function( xhr, status, errorThrown ) {
+		        alert( "Sorry, there was a problem!" );
+		        console.log( "Error: " + errorThrown );
+		        console.log( "Status: " + status );
+		        console.dir( xhr );
+		    },
+		    // Code to run regardless of success or failure
+		    complete: function( xhr, status ) {
+		        alert( "The request is complete!" );
+		    }
+		});
+		return false;*/
 	});
-	
-}); // end document.ready
+}); 
+
+// end document.ready
     </script>
     <div id='output'>
     </div>
